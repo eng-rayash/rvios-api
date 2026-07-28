@@ -32,10 +32,10 @@ async function bootstrap() {
   });
 
   // ── Start ──────────────────────────────────────────────────
-  const port = process.env.API_PORT ?? 3001;
-  await app.listen(port);
-  console.log(`\n🚀 RVIOS API running on: http://localhost:${port}/api`);
-  console.log(`   Health: http://localhost:${port}/api/health\n`);
+  const port = process.env.PORT || process.env.API_PORT || 3001;
+  await app.listen(port, '0.0.0.0');
+  console.log(`\n🚀 RVIOS API running on port: ${port}`);
+  console.log(`   Health check endpoint: /api/health\n`);
 }
 
 bootstrap();
