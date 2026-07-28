@@ -5,7 +5,7 @@
   "description": "RVIOS Technologies — REST API",
   "scripts": {
     "dev": "nest start --watch",
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "start": "node dist/src/main",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
