@@ -23,7 +23,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // ── CORS ───────────────────────────────────────────────────
-  const origins = (process.env.CORS_ORIGINS || 'http://localhost:3000').split(',');
+  const defaultOrigins = 'http://localhost:3000,http://localhost:3002,http://localhost:3003';
+  const origins = (process.env.CORS_ORIGINS || defaultOrigins).split(',');
   app.enableCors({
     origin: origins,
     credentials: true,
