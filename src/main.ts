@@ -23,10 +23,33 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // ── CORS ───────────────────────────────────────────────────
-  const defaultOrigins = 'http://localhost:3000,http://localhost:3002,http://localhost:3003';
-  const origins = (process.env.CORS_ORIGINS || defaultOrigins).split(',');
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3002',
+    'http://localhost:3003',
+    'https://rvios-dashboard.vercel.app',
+    'https://rvios-site.vercel.app',
+    'https://rvios-owner.vercel.app',
+  ];
+  const envOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',').map((s) => s.trim()).filter(Boolean)
+    : [];
+  const allowedOrigins = [...defaultOrigins, ...envOrigins];
+
   app.enableCors({
-    origin: origins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, postman) or matching allowed origins / vercel apps
+      if (
+        !origin ||
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app')
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
