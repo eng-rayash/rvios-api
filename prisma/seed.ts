@@ -142,7 +142,7 @@ async function main() {
   const defaultSettings = [
     { key: 'site_name', value: 'RVIOS Technologies', type: 'STRING' as const, label: 'اسم الموقع' },
     { key: 'site_email', value: 'info@rvios.com', type: 'STRING' as const, label: 'البريد الإلكتروني' },
-    { key: 'site_whatsapp', value: '+966551341301', type: 'STRING' as const, label: 'واتساب' },
+    { key: 'site_whatsapp', value: '+967739008083', type: 'STRING' as const, label: 'واتساب' },
     { key: 'site_maintenance', value: 'false', type: 'BOOLEAN' as const, label: 'وضع الصيانة' },
   ];
 
