@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
+const throttler_1 = require("@nestjs/throttler");
 const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("./dto/auth.dto");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
@@ -39,6 +40,7 @@ exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('login'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, throttler_1.Throttle)({ short: { ttl: 60_000, limit: 5 }, long: { ttl: 900_000, limit: 20 } }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [auth_dto_1.LoginDto]),

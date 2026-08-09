@@ -1,6 +1,6 @@
 import {
   IsArray, IsBoolean, IsEnum, IsInt, IsOptional,
-  IsString, IsUrl, MaxLength, Min, MinLength,
+  IsString, IsUrl, Max, MaxLength, Min, MinLength,
 } from 'class-validator';
 import { PostStatus } from '@prisma/client';
 
@@ -44,5 +44,5 @@ export class PostQueryDto {
   @IsOptional() @IsString() categorySlug?: string;
   @IsOptional() @IsBoolean() featured?: boolean;
   @IsOptional() @IsInt() @Min(1) page?: number = 1;
-  @IsOptional() @IsInt() @Min(1) limit?: number = 10;
+  @IsOptional() @IsInt() @Min(1) @Max(100) limit?: number = 10;
 }

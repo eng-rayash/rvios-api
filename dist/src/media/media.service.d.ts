@@ -17,13 +17,13 @@ export declare class MediaService {
         publicUrl: string;
     }>;
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
+        type: import("@prisma/client").$Enums.MediaType;
         id: string;
         url: string;
         filename: string;
         originalName: string;
         mimeType: string;
         size: number;
-        type: import("@prisma/client").$Enums.MediaType;
         uploadedAt: Date;
     }[]>;
     remove(id: string): Promise<{

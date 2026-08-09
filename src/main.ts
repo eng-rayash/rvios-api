@@ -1,13 +1,23 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
 
-  // ── Global prefix ──────────────────────────────────────────
+  // ── Security headers ───────────────────────────────────────
+  app.use(helmet());
+
+  // ── Prefix + versioning ────────────────────────────────────
+  // كل المسارات تصير /api/v1/... — تطبيق Flutter سيولّد عميله من
+  // هذا العقد، فأي كسر مستقبلي يذهب إلى v2 بدل كسر التطبيق المنشور.
   app.setGlobalPrefix('api');
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
   // ── Validation ─────────────────────────────────────────────
   app.useGlobalPipes(
@@ -19,10 +29,14 @@ async function bootstrap() {
     }),
   );
 
+  // ── Uniform error shape ────────────────────────────────────
+  app.useGlobalFilters(new AllExceptionsFilter());
+
   // ── Cookie Parser ──────────────────────────────────────────
   app.use(cookieParser());
 
   // ── CORS ───────────────────────────────────────────────────
+  // Allow-list only. Anything not listed here (or in CORS_ORIGINS) is rejected.
   const defaultOrigins = [
     'http://localhost:3000',
     'http://localhost:3002',
@@ -34,32 +48,51 @@ async function bootstrap() {
   const envOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map((s) => s.trim()).filter(Boolean)
     : [];
-  const allowedOrigins = [...defaultOrigins, ...envOrigins];
+  const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, postman) or matching allowed origins / vercel apps
-      if (
-        !origin ||
-        allowedOrigins.includes('*') ||
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app')
-      ) {
-        callback(null, true);
-      } else {
-        callback(null, true);
+      // No Origin header: server-to-server, curl, native apps — not a browser
+      // cross-origin request, so there is no cookie to protect.
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
       }
+      logger.warn(`CORS rejected origin: ${origin}`);
+      return callback(new Error('Not allowed by CORS'), false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // x-company-id يحمل سياق المستأجر لطلبات التطبيق
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-company-id'],
   });
+
+  // ── OpenAPI ────────────────────────────────────────────────
+  // مصدر العقد لتطبيق Flutter: توثيق ~15 وحدة يدوياً غير واقعي.
+  const openapi = new DocumentBuilder()
+    .setTitle('RVIOS API')
+    .setDescription('منصة RVIOS — واجهة الموقع ولوحة التحكم والتطبيق')
+    .setVersion('1.0')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
+    .addGlobalParameters({
+      name: 'x-company-id',
+      in: 'header',
+      required: false,
+      description: 'سياق المستأجر — مطلوب لوحدات التطبيق',
+      schema: { type: 'string' },
+    })
+    .build();
+  SwaggerModule.setup(
+    'api/docs',
+    app,
+    SwaggerModule.createDocument(app, openapi),
+    { jsonDocumentUrl: 'api/docs/openapi.json' },
+  );
 
   // ── Start ──────────────────────────────────────────────────
   const port = process.env.PORT || process.env.API_PORT || 3001;
   await app.listen(port, '0.0.0.0');
-  console.log(`\n🚀 RVIOS API running on port: ${port}`);
-  console.log(`   Health check endpoint: /api/health\n`);
+  logger.log(`RVIOS API running on port ${port}`);
+  logger.log(`Health: /api/v1/health · Docs: /api/docs`);
 }
 
 bootstrap();

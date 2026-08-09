@@ -1,38 +1,35 @@
-import { SettingsService, UpdateSettingDto } from './settings.service';
+import { SettingsService } from './settings.service';
+import { BulkUpdateSettingsDto, UpdateSettingDto } from './dto/setting.dto';
 export declare class SettingsController {
     private svc;
     constructor(svc: SettingsService);
+    findPublic(): Promise<Record<string, string>>;
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
-        id: string;
         type: import("@prisma/client").$Enums.SettingType;
-        value: string;
+        id: string;
         key: string;
+        value: string;
         label: string | null;
     }[]>;
     findOne(key: string): Promise<{
-        id: string;
         type: import("@prisma/client").$Enums.SettingType;
-        value: string;
+        id: string;
         key: string;
+        value: string;
         label: string | null;
     }>;
     update(key: string, dto: UpdateSettingDto): Promise<{
-        id: string;
         type: import("@prisma/client").$Enums.SettingType;
-        value: string;
+        id: string;
         key: string;
+        value: string;
         label: string | null;
     }>;
-    bulkUpdate(body: {
-        settings: {
-            key: string;
-            value: string;
-        }[];
-    }): Promise<{
-        id: string;
+    bulkUpdate(dto: BulkUpdateSettingsDto): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
-        value: string;
+        id: string;
         key: string;
+        value: string;
         label: string | null;
     }[]>;
 }

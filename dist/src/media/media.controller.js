@@ -17,13 +17,12 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const passport_1 = require("@nestjs/passport");
 const multer_1 = require("multer");
+const client_1 = require("@prisma/client");
 const media_service_1 = require("./media.service");
-const ALLOWED_MIME = [
-    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
-    'video/mp4', 'video/webm',
-    'application/pdf',
-];
-const MAX_SIZE = 20 * 1024 * 1024;
+const presign_dto_1 = require("./dto/presign.dto");
+const allowed_mime_1 = require("./allowed-mime");
+const roles_decorator_1 = require("../common/decorators/roles.decorator");
+const roles_guard_1 = require("../common/guards/roles.guard");
 let MediaController = class MediaController {
     constructor(svc) {
         this.svc = svc;
@@ -32,8 +31,8 @@ let MediaController = class MediaController {
     upload(file) {
         return this.svc.upload(file);
     }
-    presign(body) {
-        return this.svc.getPresignedUrl(body.filename, body.contentType);
+    presign(dto) {
+        return this.svc.getPresignedUrl(dto.filename, dto.contentType);
     }
     remove(id) { return this.svc.remove(id); }
 };
@@ -48,9 +47,9 @@ __decorate([
     (0, common_1.Post)('upload'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.memoryStorage)(),
-        limits: { fileSize: MAX_SIZE },
+        limits: { fileSize: allowed_mime_1.MAX_UPLOAD_SIZE },
         fileFilter: (_req, file, cb) => {
-            if (ALLOWED_MIME.includes(file.mimetype))
+            if (allowed_mime_1.ALLOWED_MIME.includes(file.mimetype))
                 cb(null, true);
             else
                 cb(new Error('نوع الملف غير مدعوم'), false);
@@ -65,11 +64,12 @@ __decorate([
     (0, common_1.Post)('presign'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [presign_dto_1.PresignDto]),
     __metadata("design:returntype", void 0)
 ], MediaController.prototype, "presign", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -77,7 +77,8 @@ __decorate([
 ], MediaController.prototype, "remove", null);
 exports.MediaController = MediaController = __decorate([
     (0, common_1.Controller)('media'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.EDITOR),
     __metadata("design:paramtypes", [media_service_1.MediaService])
 ], MediaController);
 //# sourceMappingURL=media.controller.js.map

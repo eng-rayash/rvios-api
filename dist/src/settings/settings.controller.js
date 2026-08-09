@@ -15,27 +15,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SettingsController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
+const client_1 = require("@prisma/client");
 const settings_service_1 = require("./settings.service");
+const setting_dto_1 = require("./dto/setting.dto");
+const roles_decorator_1 = require("../common/decorators/roles.decorator");
+const roles_guard_1 = require("../common/guards/roles.guard");
 let SettingsController = class SettingsController {
     constructor(svc) {
         this.svc = svc;
     }
+    findPublic() { return this.svc.findPublic(); }
     findAll() { return this.svc.findAll(); }
     findOne(key) { return this.svc.findByKey(key); }
-    update(key, dto) { return this.svc.update(key, dto); }
-    bulkUpdate(body) { return this.svc.bulkUpdate(body.settings); }
+    update(key, dto) {
+        return this.svc.update(key, dto);
+    }
+    bulkUpdate(dto) {
+        return this.svc.bulkUpdate(dto.settings);
+    }
 };
 exports.SettingsController = SettingsController;
 __decorate([
+    (0, common_1.Get)('public'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SettingsController.prototype, "findPublic", null);
+__decorate([
     (0, common_1.Get)(),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':key'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     __param(0, (0, common_1.Param)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -43,19 +60,21 @@ __decorate([
 ], SettingsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Put)(':key'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     __param(0, (0, common_1.Param)('key')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, settings_service_1.UpdateSettingDto]),
+    __metadata("design:paramtypes", [String, setting_dto_1.UpdateSettingDto]),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "update", null);
 __decorate([
     (0, common_1.Put)(),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [setting_dto_1.BulkUpdateSettingsDto]),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "bulkUpdate", null);
 exports.SettingsController = SettingsController = __decorate([

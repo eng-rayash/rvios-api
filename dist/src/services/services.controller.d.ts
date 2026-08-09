@@ -6,9 +6,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;
@@ -20,9 +20,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;
@@ -34,9 +34,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;
@@ -48,9 +48,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;
@@ -62,9 +62,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;
@@ -76,9 +76,9 @@ export declare class ServicesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string;
-        slug: string;
         description: string;
         status: import("@prisma/client").$Enums.ServiceStatus;
         descriptionEn: string;

@@ -4,27 +4,27 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     findAll(): Promise<{
-        email: string;
         id: string;
+        email: string;
         role: import("@prisma/client").$Enums.UserRole;
         createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
-        email: string;
         id: string;
+        email: string;
         role: import("@prisma/client").$Enums.UserRole;
         createdAt: Date;
         updatedAt: Date;
     }>;
     create(dto: CreateUserDto): Promise<{
-        email: string;
         id: string;
+        email: string;
         role: import("@prisma/client").$Enums.UserRole;
         createdAt: Date;
     }>;
     update(id: string, dto: UpdateUserDto): Promise<{
-        email: string;
         id: string;
+        email: string;
         role: import("@prisma/client").$Enums.UserRole;
         updatedAt: Date;
     }>;

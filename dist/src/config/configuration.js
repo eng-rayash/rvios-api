@@ -1,14 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+function required(name) {
+    const value = process.env[name];
+    if (!value || value.trim() === '') {
+        throw new Error(`Missing required environment variable: ${name}. ` +
+            `Copy .env.example to .env and fill it in.`);
+    }
+    return value;
+}
 exports.default = () => ({
     port: parseInt(process.env.API_PORT || '3001', 10),
     database: {
-        url: process.env.DATABASE_URL,
+        url: required('DATABASE_URL'),
     },
     jwt: {
-        secret: process.env.JWT_SECRET || 'fallback-secret',
+        secret: required('JWT_SECRET'),
         expiresIn: process.env.JWT_EXPIRES_IN || '15m',
-        refreshSecret: process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret',
+        refreshSecret: required('JWT_REFRESH_SECRET'),
         refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
     },
     cloudflare: {

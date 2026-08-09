@@ -9,22 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SettingsService = exports.UpdateSettingDto = void 0;
+exports.SettingsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const class_validator_1 = require("class-validator");
-class UpdateSettingDto {
-}
-exports.UpdateSettingDto = UpdateSettingDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateSettingDto.prototype, "value", void 0);
+const PUBLIC_SETTING_KEYS = ['site_name', 'site_email', 'site_whatsapp'];
 let SettingsService = class SettingsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
     findAll() { return this.prisma.setting.findMany({ orderBy: { key: 'asc' } }); }
+    async findPublic() {
+        const rows = await this.prisma.setting.findMany({
+            where: { key: { in: PUBLIC_SETTING_KEYS } },
+            select: { key: true, value: true },
+        });
+        return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+    }
     async findByKey(key) {
         const s = await this.prisma.setting.findUnique({ where: { key } });
         if (!s)
@@ -36,7 +36,7 @@ let SettingsService = class SettingsService {
         return this.prisma.setting.update({ where: { key }, data: { value: dto.value } });
     }
     async bulkUpdate(settings) {
-        return Promise.all(settings.map((s) => this.prisma.setting.upsert({
+        return this.prisma.$transaction(settings.map((s) => this.prisma.setting.upsert({
             where: { key: s.key },
             update: { value: s.value },
             create: { key: s.key, value: s.value, type: 'STRING' },

@@ -17,32 +17,32 @@ export declare class CategoriesService {
             posts: number;
         };
     } & {
-        id: string;
         name: string;
-        slug: string;
+        id: string;
         nameEn: string;
+        slug: string;
     })[]>;
     findOne(id: string): Promise<{
         _count: {
             posts: number;
         };
     } & {
-        id: string;
         name: string;
-        slug: string;
+        id: string;
         nameEn: string;
+        slug: string;
     }>;
     create(dto: CreateCategoryDto): Promise<{
-        id: string;
         name: string;
-        slug: string;
+        id: string;
         nameEn: string;
+        slug: string;
     }>;
     update(id: string, dto: UpdateCategoryDto): Promise<{
-        id: string;
         name: string;
-        slug: string;
+        id: string;
         nameEn: string;
+        slug: string;
     }>;
     remove(id: string): Promise<{
         message: string;

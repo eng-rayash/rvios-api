@@ -6,18 +6,18 @@ export declare class PostsService {
     findPublished(query: PostQueryDto): Promise<{
         data: ({
             category: {
-                id: string;
                 name: string;
-                slug: string;
+                id: string;
                 nameEn: string;
+                slug: string;
             };
         } & {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
             title: string;
             titleEn: string | null;
-            slug: string;
             description: string;
             content: string;
             metaDescription: string;
@@ -28,8 +28,8 @@ export declare class PostsService {
             readingTime: number;
             status: import("@prisma/client").$Enums.PostStatus;
             featured: boolean;
-            categoryId: string;
             views: number;
+            categoryId: string;
             publishedAt: Date | null;
         })[];
         meta: {
@@ -41,18 +41,18 @@ export declare class PostsService {
     }>;
     findBySlug(slug: string): Promise<{
         category: {
-            id: string;
             name: string;
-            slug: string;
+            id: string;
             nameEn: string;
+            slug: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string | null;
-        slug: string;
         description: string;
         content: string;
         metaDescription: string;
@@ -63,24 +63,24 @@ export declare class PostsService {
         readingTime: number;
         status: import("@prisma/client").$Enums.PostStatus;
         featured: boolean;
-        categoryId: string;
         views: number;
+        categoryId: string;
         publishedAt: Date | null;
     }>;
     findAll(query: PostQueryDto): Promise<{
         data: ({
             category: {
-                id: string;
                 name: string;
+                id: string;
                 slug: string;
             };
         } & {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            slug: string;
             title: string;
             titleEn: string | null;
-            slug: string;
             description: string;
             content: string;
             metaDescription: string;
@@ -91,8 +91,8 @@ export declare class PostsService {
             readingTime: number;
             status: import("@prisma/client").$Enums.PostStatus;
             featured: boolean;
-            categoryId: string;
             views: number;
+            categoryId: string;
             publishedAt: Date | null;
         })[];
         meta: {
@@ -104,18 +104,18 @@ export declare class PostsService {
     }>;
     findOne(id: string): Promise<{
         category: {
-            id: string;
             name: string;
-            slug: string;
+            id: string;
             nameEn: string;
+            slug: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string | null;
-        slug: string;
         description: string;
         content: string;
         metaDescription: string;
@@ -126,24 +126,24 @@ export declare class PostsService {
         readingTime: number;
         status: import("@prisma/client").$Enums.PostStatus;
         featured: boolean;
-        categoryId: string;
         views: number;
+        categoryId: string;
         publishedAt: Date | null;
     }>;
     create(dto: CreatePostDto): Promise<{
         category: {
-            id: string;
             name: string;
-            slug: string;
+            id: string;
             nameEn: string;
+            slug: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string | null;
-        slug: string;
         description: string;
         content: string;
         metaDescription: string;
@@ -154,24 +154,24 @@ export declare class PostsService {
         readingTime: number;
         status: import("@prisma/client").$Enums.PostStatus;
         featured: boolean;
-        categoryId: string;
         views: number;
+        categoryId: string;
         publishedAt: Date | null;
     }>;
     update(id: string, dto: UpdatePostDto): Promise<{
         category: {
-            id: string;
             name: string;
-            slug: string;
+            id: string;
             nameEn: string;
+            slug: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
         title: string;
         titleEn: string | null;
-        slug: string;
         description: string;
         content: string;
         metaDescription: string;
@@ -182,8 +182,8 @@ export declare class PostsService {
         readingTime: number;
         status: import("@prisma/client").$Enums.PostStatus;
         featured: boolean;
-        categoryId: string;
         views: number;
+        categoryId: string;
         publishedAt: Date | null;
     }>;
     remove(id: string): Promise<{

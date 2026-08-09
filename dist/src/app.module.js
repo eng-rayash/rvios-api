@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
+const tenant_middleware_1 = require("./common/tenant/tenant.middleware");
 const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const prisma_module_1 = require("./prisma/prisma.module");
@@ -24,6 +26,9 @@ const owner_module_1 = require("./owner/owner.module");
 const health_module_1 = require("./health/health.module");
 const configuration_1 = require("./config/configuration");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer.apply(tenant_middleware_1.TenantMiddleware).forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
@@ -50,6 +55,9 @@ exports.AppModule = AppModule = __decorate([
             contacts_module_1.ContactsModule,
             settings_module_1.SettingsModule,
             owner_module_1.OwnerModule,
+        ],
+        providers: [
+            { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },
         ],
     })
 ], AppModule);

@@ -1,7 +1,7 @@
 declare const _default: () => {
     port: number;
     database: {
-        url: string | undefined;
+        url: string;
     };
     jwt: {
         secret: string;

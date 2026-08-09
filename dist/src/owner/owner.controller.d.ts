@@ -3,9 +3,9 @@ export declare class OwnerController {
     private svc;
     constructor(svc: OwnerService);
     getProfile(): Promise<{
+        name: string;
         id: string;
         updatedAt: Date;
-        name: string;
         title: string;
         titleEn: string;
         bio: string;
@@ -16,9 +16,9 @@ export declare class OwnerController {
         resumeUrl: string | null;
     }>;
     updateProfile(dto: UpdateOwnerProfileDto): Promise<{
+        name: string;
         id: string;
         updatedAt: Date;
-        name: string;
         title: string;
         titleEn: string;
         bio: string;

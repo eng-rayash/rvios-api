@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto, RefreshTokenDto } from './dto/auth.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -16,9 +17,10 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // POST /api/auth/login
+  // POST /api/auth/login — hard limit: this is the brute-force surface
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60_000, limit: 5 }, long: { ttl: 900_000, limit: 20 } })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }

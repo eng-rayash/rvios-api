@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { TenantMiddleware } from './common/tenant/tenant.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -46,5 +48,16 @@ import configuration from './config/configuration';
     SettingsModule,
     OwnerModule,
   ],
+  providers: [
+    // Registering ThrottlerGuard globally — without this the ThrottlerModule
+    // config above has no effect at all.
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // يفتح سياق المستأجر لكل طلب. خامل اليوم — لا نموذج يحمل companyId
+    // بعد — وجاهز للحظة إضافة وحدات التطبيق.
+    consumer.apply(TenantMiddleware).forRoutes('*');
+  }
+}

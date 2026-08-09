@@ -11,8 +11,8 @@ export declare class JwtStrategy extends JwtStrategy_base {
         email: string;
         role: string;
     }): Promise<{
-        email: string;
         id: string;
+        email: string;
         role: import("@prisma/client").$Enums.UserRole;
     }>;
 }

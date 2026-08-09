@@ -5,18 +5,16 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { memoryStorage } from 'multer';
+import { UserRole } from '@prisma/client';
 import { MediaService } from './media.service';
-
-const ALLOWED_MIME = [
-  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
-  'video/mp4', 'video/webm',
-  'application/pdf',
-];
-
-const MAX_SIZE = 20 * 1024 * 1024; // 20MB
+import { PresignDto } from './dto/presign.dto';
+import { ALLOWED_MIME, MAX_UPLOAD_SIZE } from './allowed-mime';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @Controller('media')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles(UserRole.ADMIN, UserRole.EDITOR)
 export class MediaController {
   constructor(private svc: MediaService) {}
 
@@ -29,9 +27,9 @@ export class MediaController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
-      limits: { fileSize: MAX_SIZE },
+      limits: { fileSize: MAX_UPLOAD_SIZE },
       fileFilter: (_req, file, cb) => {
-        if (ALLOWED_MIME.includes(file.mimetype)) cb(null, true);
+        if ((ALLOWED_MIME as readonly string[]).includes(file.mimetype)) cb(null, true);
         else cb(new Error('نوع الملف غير مدعوم'), false);
       },
     }),
@@ -42,11 +40,12 @@ export class MediaController {
 
   // POST /api/media/presign  — get presigned URL for direct upload
   @Post('presign')
-  presign(@Body() body: { filename: string; contentType: string }) {
-    return this.svc.getPresignedUrl(body.filename, body.contentType);
+  presign(@Body() dto: PresignDto) {
+    return this.svc.getPresignedUrl(dto.filename, dto.contentType);
   }
 
-  // DELETE /api/media/:id
+  // DELETE /api/media/:id — destructive, admin only
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string) { return this.svc.remove(id); }
 }

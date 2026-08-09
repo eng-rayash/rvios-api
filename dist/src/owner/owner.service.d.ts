@@ -14,9 +14,9 @@ export declare class OwnerService {
     private prisma;
     constructor(prisma: PrismaService);
     getProfile(): Promise<{
+        name: string;
         id: string;
         updatedAt: Date;
-        name: string;
         title: string;
         titleEn: string;
         bio: string;
@@ -27,9 +27,9 @@ export declare class OwnerService {
         resumeUrl: string | null;
     }>;
     updateProfile(dto: UpdateOwnerProfileDto): Promise<{
+        name: string;
         id: string;
         updatedAt: Date;
-        name: string;
         title: string;
         titleEn: string;
         bio: string;

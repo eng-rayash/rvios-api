@@ -201,6 +201,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(100),
     __metadata("design:type", Number)
 ], PostQueryDto.prototype, "limit", void 0);
 //# sourceMappingURL=post.dto.js.map
