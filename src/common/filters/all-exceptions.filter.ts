@@ -50,11 +50,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
   } {
     if (e instanceof HttpException) {
       const body = e.getResponse();
-      const message =
-        typeof body === 'string'
-          ? body
-          : ((body as { message?: string | string[] }).message ?? e.message);
-      return { status: e.getStatus(), message };
+      if (typeof body === 'string') {
+        return { status: e.getStatus(), message: body };
+      }
+
+      /* نحتفظ بالحقول الإضافية التي وضعها المُطلِق عمداً — مثل `missing`
+         في بوّابة النشر. إسقاطها كان يحوّل رسالة «ينقصك كذا» إلى 422 صامتة. */
+      const { message, statusCode: _sc, error: _err, ...extra } = body as Record<
+        string,
+        unknown
+      > & { message?: string | string[] };
+
+      return {
+        status: e.getStatus(),
+        message: (message as string | string[]) ?? e.message,
+        details: Object.keys(extra).length ? extra : undefined,
+      };
     }
 
     if (e instanceof Prisma.PrismaClientKnownRequestError) {

@@ -7,29 +7,29 @@ export declare class SettingsController {
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }[]>;
     findOne(key: string): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }>;
     update(key: string, dto: UpdateSettingDto): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }>;
     bulkUpdate(dto: BulkUpdateSettingsDto): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }[]>;
 }

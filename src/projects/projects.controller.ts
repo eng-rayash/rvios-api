@@ -1,41 +1,47 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { UserRole } from '@prisma/client';
-import { ProjectsService, CreateProjectDto, UpdateProjectDto } from './projects.service';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { ProjectsService } from './projects.service';
+import { QueryProjectsDto } from './dto/query-projects.dto';
 
+/**
+ * المسارات العامة لمعرض الأعمال.
+ *
+ * لا حُرّاس هنا، وإقصاء المسودّات يقع في الخدمة لا في المتحكّم — فلا
+ * يمكن لمسار جديد أن يسرّب مشروعاً غير منشور بالسهو.
+ */
+@ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
   constructor(private svc: ProjectsService) {}
 
-  // ── Public ────────────────────────────────────────────────
-  @Get('public') findAll() { return this.svc.findAll(); }
-  @Get('public/featured') findFeatured() { return this.svc.findFeatured(); }
-
-  // ── Admin ─────────────────────────────────────────────────
+  /** GET /api/v1/projects — شبكة المعرض مع الفلترة والترقيم */
   @Get()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.EDITOR)
-  findAllAdmin() { return this.svc.findAll(); }
+  findPublic(@Query() query: QueryProjectsDto) {
+    return this.svc.findPublic(query);
+  }
 
-  @Get(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.EDITOR)
-  findOne(@Param('id') id: string) { return this.svc.findOne(id); }
+  /** GET /api/v1/projects/filters — خيارات الفلاتر بأعدادها */
+  @Get('filters')
+  filters() {
+    return this.svc.filters();
+  }
 
-  @Post()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.EDITOR)
-  create(@Body() dto: CreateProjectDto) { return this.svc.create(dto); }
+  /** GET /api/v1/projects/categories */
+  @Get('categories')
+  categories() {
+    return this.svc.categories();
+  }
 
-  @Put(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.EDITOR)
-  update(@Param('id') id: string, @Body() dto: UpdateProjectDto) { return this.svc.update(id, dto); }
+  /** GET /api/v1/projects/slugs — لـ generateStaticParams و sitemap */
+  @Get('slugs')
+  slugs() {
+    return this.svc.slugs();
+  }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.ADMIN)
-  remove(@Param('id') id: string) { return this.svc.remove(id); }
+  /** GET /api/v1/projects/:slug — صفحة المشروع الكاملة.
+   *  مُعرَّف أخيراً حتى لا يبتلع المسارات الثابتة أعلاه. */
+  @Get(':slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.svc.findBySlug(slug);
+  }
 }

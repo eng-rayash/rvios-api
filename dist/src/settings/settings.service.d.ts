@@ -6,30 +6,30 @@ export declare class SettingsService {
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }[]>;
     findPublic(): Promise<Record<string, string>>;
     findByKey(key: string): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }>;
     update(key: string, dto: UpdateSettingDto): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }>;
     bulkUpdate(settings: SettingEntryDto[]): Promise<{
         type: import("@prisma/client").$Enums.SettingType;
         id: string;
-        key: string;
-        value: string;
         label: string | null;
+        value: string;
+        key: string;
     }[]>;
 }
